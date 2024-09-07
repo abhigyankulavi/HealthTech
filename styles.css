@@ -8,7 +8,10 @@ body {
 }
 
 img {
-    max-width: 100%;
+    display: block;
+    max-width: 16%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Header */
@@ -56,7 +59,10 @@ img {
 }
 
 .banner_img {
-    max-width: 90%;
+    display: block;
+    max-width: 16%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Primary Heading */
@@ -84,8 +90,11 @@ img {
 }
 
 .about_img {
-    width: 100%;
+    display: block;
+    width: 16%;
     border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Services Section */
