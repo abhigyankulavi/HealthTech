@@ -39,6 +39,7 @@ nav.menu_text ul {
     list-style: none;
     margin: 0;
     padding: 0;
+    text-align: Center;
 }
 
 nav.menu_text ul li {
@@ -53,6 +54,7 @@ nav.menu_text ul li a {
     padding: 10px 20px;
     transition: background-color 0.3s ease;
     border-radius: 5px;
+    text-align: Center;
 }
 
 nav.menu_text ul li a:hover {
@@ -82,7 +84,7 @@ nav.menu_text ul li a:hover {
     background: linear-gradient(to right, #16a085, #27ae60);
     padding: 100px 0;
     color: white;
-    text-align: left;
+    text-align: Center;
 }
 
 .banner_text {
