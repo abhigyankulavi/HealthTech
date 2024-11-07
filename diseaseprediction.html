@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Health Advisor - AI Disease Prediction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #EFF6FF, #FFFFFF);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #1E40AF;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #4B5563;
+        }
+
+        .prediction-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .symptoms-form {
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .symptom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .symptom-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: #F3F4F6;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .symptom-checkbox:hover {
+            background: #E5E7EB;
+        }
+
+        .symptom-checkbox input[type="checkbox"] {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            resize: vertical;
+            min-height: 100px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .predict-button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #2563EB;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .predict-button:hover {
+            background-color: #1D4ED8;
+        }
+
+        .prediction-results {
+            display: none;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .prediction-results.active {
+            display: block;
+        }
+
+        .result-card {
+            background: #F8FAFC;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .disease-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1E40AF;
+            margin-bottom: 0.5rem;
+        }
+
+        .probability {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .probability-bar {
+            flex-grow: 1;
+            height: 0.5rem;
+            background: #E5E7EB;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .probability-fill {
+            height: 100%;
+            background: #2563EB;
+            border-radius: 1rem;
+            transition: width 0.3s ease;
+        }
+
+        .probability-value {
+            font-weight: 500;
+            color: #4B5563;
+            min-width: 3rem;
+        }
+
+        .recommendations {
+            background: #EFF6FF;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        .recommendations h3 {
+            color: #1E40AF;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendations ul {
+            list-style-type: none;
+        }
+
+        .recommendations li {
+            color: #4B5563;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .recommendations li::before {
+            content: "•";
+            color: #2563EB;
+            position: absolute;
+            left: 0.5rem;
+        }
+
+        .disclaimer {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #FEF2F2;
+            border-radius: 0.5rem;
+            color: #991B1B;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AI Disease Prediction</h1>
+            <p>Enter your symptoms for an AI-powered health assessment</p>
+        </div>
+
+        <div class="prediction-container">
+            <form class="symptoms-form" id="symptomsForm">
+                <div class="form-group">
+                    <label>Common Symptoms</label>
+                    <div class="symptom-grid">
+                        <label class="symptom-checkbox">
+                            <input type="checkbox" name="symptoms" value="fever">
+                            Fever
+                        </label>
+                        <label class="symptom-checkbox">
+                            <input type="checkbox" name="symptoms" value="cough">
+                            Cough
+                        </label>
+                        <label class="symptom-checkbox">
+                            <input type="checkbox" name="symptoms" value="fatigue">
+                            Fatigue
+                        </label>
+                        <label class="symptom-checkbox">
+                            <input type="checkbox" name="symptoms" value="headache">
+                            Headache
+                        </label>
+                        <label class="symptom-checkbox">
+                            <input type="checkbox" name="symptoms" value="sore_throat">
+                            Sore Throat
+                        </label>
+                        <label class="symptom-checkbox">
+                            <input type="checkbox" name="symptoms" value="body_aches">
+                            Body Aches
+                        </label>
+                        <label class="symptom-checkbox">
+                            <input type="checkbox" name="symptoms" value="shortness_of_breath">
+                            Shortness of Breath
+                        </label>
+                        <label class="symptom-checkbox">
+                            <input type="checkbox" name="symptoms" value="nausea">
+                            Nausea
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalSymptoms">Additional Symptoms or Notes</label>
+                    <textarea id="additionalSymptoms" placeholder="Describe any other symptoms or provide additional details..."></textarea>
+                </div>
+
+                <button type="submit" class="predict-button">Analyze Symptoms</button>
+            </form>
+
+            <div class="prediction-results" id="predictionResults">
+                <div class="result-card">
+                    <div class="disease-name">Primary Prediction</div>
+                    <div class="probability">
+                        <div class="probability-bar">
+                            <div class="probability-fill" style="width: 75%"></div>
+                        </div>
+                        <span class="probability-value">75%</span>
+                    </div>
+                    <div class="recommendations">
+                        <h3>Recommendations</h3>
+                        <ul>
+                            <li>Schedule a consultation with a healthcare provider</li>
+                            <li>Monitor your symptoms for any changes</li>
+                            <li>Rest and maintain proper hydration</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="disclaimer">
+                    This is an AI-powered prediction tool and should not be used as a substitute for professional medical advice. 
+                    Please consult with a healthcare provider for proper diagnosis and treatment.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const symptomsForm = document.getElementById('symptomsForm');
+        const predictionResults = document.getElementById('predictionResults');
+
+        symptomsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get selected symptoms
+            const selectedSymptoms = Array.from(document.querySelectorAll('input[name="symptoms"]:checked'))
+                .map(checkbox => checkbox.value);
+            
+            const additionalSymptoms = document.getElementById('additionalSymptoms').value;
+
+            // Simulate AI prediction (in a real application, this would be an API call)
+            console.log('Analyzing symptoms:', {
+                selectedSymptoms,
+                additionalSymptoms
+            });
+
+            // Show prediction results
+            predictionResults.classList.add('active');
+
+            // Animate probability bar
+            const probabilityFill = document.querySelector('.probability-fill');
+            probabilityFill.style.width = '0%';
+            setTimeout(() => {
+                probabilityFill.style.width = '75%';
+            }, 100);
+
+            // Scroll to results
+            predictionResults.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
