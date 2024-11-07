@@ -109,6 +109,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+            gap: 20px;
         }
 
         .feature-card {
@@ -120,6 +121,7 @@
             padding: 1.5rem;
             text-align: center;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            min-height: 300px;
             transition: box-shadow 0.2s;
         }
 
@@ -148,6 +150,7 @@
         .feature-card p {
             color: #4b5563;
             line-height: 1.5;
+            flex-grow: 1;
         }
 
         @media (max-width: 768px) {
