@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Disease Prediction</title>
   <style>
-        * {
+          * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -226,14 +226,31 @@
       <div class="form-group">
         <h2>Common Symptoms</h2>
         <div class="symptom-grid">
-          <div class="symptom">Fever</div>
-          <div class="symptom">Cough</div>
-          <div class="symptom">Fatigue</div>
-          <div class="symptom">Headache</div>
-          <div class="symptom">Sore Throat</div>
-          <div class="symptom">Body Aches</div>
-          <div class="symptom">Shortness of Breath</div>
-          <div class="symptom">Nausea</div>
+          <!-- Checkbox elements to select symptoms -->
+          <label class="symptom-checkbox">
+            <input type="checkbox" value="Fever"> Fever
+          </label>
+          <label class="symptom-checkbox">
+            <input type="checkbox" value="Cough"> Cough
+          </label>
+          <label class="symptom-checkbox">
+            <input type="checkbox" value="Fatigue"> Fatigue
+          </label>
+          <label class="symptom-checkbox">
+            <input type="checkbox" value="Headache"> Headache
+          </label>
+          <label class="symptom-checkbox">
+            <input type="checkbox" value="Sore Throat"> Sore Throat
+          </label>
+          <label class="symptom-checkbox">
+            <input type="checkbox" value="Body Aches"> Body Aches
+          </label>
+          <label class="symptom-checkbox">
+            <input type="checkbox" value="Shortness of Breath"> Shortness of Breath
+          </label>
+          <label class="symptom-checkbox">
+            <input type="checkbox" value="Nausea"> Nausea
+          </label>
         </div>
       </div>
 
@@ -242,7 +259,7 @@
         <textarea id="additionalSymptoms" rows="3"></textarea>
       </div>
 
-      <button id="analyzeButton">Analyze Symptoms</button>
+      <button id="analyzeButton" class="predict-button">Analyze Symptoms</button>
 
       <div id="predictionResults" class="prediction-results">
         <!-- Prediction results will be displayed here -->
@@ -255,11 +272,43 @@
   </div>
 
   <script>
-    const analyzeButton = document.getElementById('analyzeButton');
-    const resultsContainer = document.getElementById('predictionResults');
+    // Function to collect symptoms based on selected checkboxes and additional input
+    function collectSymptoms() {
+      const selectedSymptoms = Array.from(document.querySelectorAll('.symptom-checkbox input:checked'))
+        .map(input => input.value);
+      const additionalSymptoms = document.getElementById('additionalSymptoms').value.trim();
 
-    analyzeButton.addEventListener('click', async () => {
-      const symptoms = document.getElementById('additionalSymptoms').value;
+      // Combine selected symptoms and additional symptoms
+      const allSymptoms = selectedSymptoms.concat(additionalSymptoms ? [additionalSymptoms] : []);
+      return allSymptoms.join(', ');
+    }
+
+    // Function to display prediction results
+    function displayResults(data) {
+      const resultsContainer = document.getElementById('predictionResults');
+      resultsContainer.innerHTML = `
+        <div class="result-card">
+          <div class="disease-name">${data.disease}</div>
+          <div class="probability">
+            <div class="probability-bar">
+              <div class="probability-fill" style="width: ${data.confidence}%;"></div>
+            </div>
+            <span class="probability-value">${data.confidence.toFixed(1)}%</span>
+          </div>
+          <div class="recommendations">
+            <h3>Recommendations</h3>
+            <ul>
+              <li>${data.recommendation}</li>
+            </ul>
+          </div>
+        </div>
+      `;
+      resultsContainer.classList.add('active');
+    }
+
+    // Event listener for Analyze button
+    document.getElementById('analyzeButton').addEventListener('click', async () => {
+      const symptoms = collectSymptoms();
 
       try {
         const response = await fetch('/api/predict', {
@@ -272,29 +321,15 @@
 
         const data = await response.json();
 
-        // Update the UI with the prediction results
-        resultsContainer.innerHTML = `
-          <div class="result-card">
-            <div class="disease-name">${data.disease}</div>
-            <div class="probability">
-              <div class="probability-bar">
-                <div class="probability-fill" style="width: ${data.confidence}%;"></div>
-              </div>
-              <span class="probability-value">${data.confidence.toFixed(1)}%</span>
-            </div>
-            <div class="recommendations">
-              <h3>Recommendations</h3>
-              <ul>
-                <li>${data.recommendation}</li>
-              </ul>
-            </div>
-          </div>
-        `;
+        // Display prediction results using the displayResults function
+        displayResults(data);
       } catch (error) {
         console.error('Error:', error);
         // Handle error and update the UI accordingly
+        alert('An error occurred while analyzing symptoms.');
       }
     });
   </script>
 </body>
 </html>
+
