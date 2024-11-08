@@ -297,38 +297,51 @@
         </div>
     </div>
 
-    <script>
-        const symptomsForm = document.getElementById('symptomsForm');
-        const predictionResults = document.getElementById('predictionResults');
+ <!-- disease prediction.html -->
+<script>
+  const form = document.querySelector('form');
+  const resultsContainer = document.getElementById('predictionResults');
 
-        symptomsForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Get selected symptoms
-            const selectedSymptoms = Array.from(document.querySelectorAll('input[name="symptoms"]:checked'))
-                .map(checkbox => checkbox.value);
-            
-            const additionalSymptoms = document.getElementById('additionalSymptoms').value;
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-            // Simulate AI prediction (in a real application, this would be an API call)
-            console.log('Analyzing symptoms:', {
-                selectedSymptoms,
-                additionalSymptoms
-            });
+    const symptoms = document.querySelector('#symptoms').value;
+    const language = 'en'; // or detect the user's language
 
-            // Show prediction results
-            predictionResults.classList.add('active');
+    try {
+      const response = await fetch('/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text: symptoms, language })
+      });
 
-            // Animate probability bar
-            const probabilityFill = document.querySelector('.probability-fill');
-            probabilityFill.style.width = '0%';
-            setTimeout(() => {
-                probabilityFill.style.width = '75%';
-            }, 100);
+      const data = await response.json();
 
-            // Scroll to results
-            predictionResults.scrollIntoView({ behavior: 'smooth' });
-        });
-    </script>
+      // Update the UI with the prediction results
+      resultsContainer.innerHTML = `
+        <div class="result-card">
+          <div class="disease-name">${data.disease}</div>
+          <div class="probability">
+            <div class="probability-bar">
+              <div class="probability-fill" style="width: ${data.confidence}%;"></div>
+            </div>
+            <span class="probability-value">${data.confidence.toFixed(1)}%</span>
+          </div>
+          <div class="recommendations">
+            <h3>Recommendations</h3>
+            <ul>
+              <li>${data.recommendation}</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle error and update the UI accordingly
+    }
+  });
+</script>
 </body>
 </html>
