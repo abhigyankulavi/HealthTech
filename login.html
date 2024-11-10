@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Health Advisor - Login</title>
+    <!-- Add Supabase JavaScript SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -162,6 +164,21 @@
             text-decoration: none;
             font-weight: 500;
         }
+        .error-message {
+            color: #DC2626;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            display: none;
+        }
+        
+        .success-message {
+            color: #059669;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -171,10 +188,12 @@
             <p>Welcome back! Please login to continue.</p>
         </div>
 
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
         <div class="tab-container">
             <button class="tab-button active" data-type="patient">Patient</button>
             <button class="tab-button" data-type="admin">Admin</button>
-            <button class="tab-button" data-type="non-member">Non-member</button>
         </div>
 
         <form id="loginForm">
@@ -199,58 +218,152 @@
                     <input type="checkbox" id="remember">
                     <span>Remember me</span>
                 </label>
-                <a href="#" class="forgot-password">Forgot password?</a>
+                <a href="#" class="forgot-password" id="forgotPassword">Forgot password?</a>
             </div>
 
             <button type="submit" class="login-button">Sign in</button>
-
-            <div class="signup-link" id="signupSection" style="display: none;">
-                Don't have an account? <a href="#">Sign up now</a>
-            </div>
         </form>
     </div>
 
     <script>
-        // Get DOM elements
+        // Initialize Supabase client
+        const SUPABASE_URL = 'https://xleyqfmaqovkbtrfzryg.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZXlxZm1hcW92a2J0cmZ6cnlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc0NDY0MzIsImV4cCI6MjA0MzAyMjQzMn0.tk-qdlJLyy4kLb6Fq32mvzto9bIryuf07n7SSzr9Oes';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // DOM elements
         const tabButtons = document.querySelectorAll('.tab-button');
         const loginForm = document.getElementById('loginForm');
-        const signupSection = document.getElementById('signupSection');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const forgotPasswordLink = document.getElementById('forgotPassword');
         let currentUserType = 'patient';
 
-        // Tab switching functionality
+        // Function to show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        // Function to show success message
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        // Handle tab switching
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // Remove active class from all buttons
                 tabButtons.forEach(btn => btn.classList.remove('active'));
-                // Add active class to clicked button
                 button.classList.add('active');
-                // Update current user type
                 currentUserType = button.dataset.type;
-                // Show/hide signup section for non-members
-                signupSection.style.display = 
-                    currentUserType === 'non-member' ? 'block' : 'none';
             });
         });
 
-        // Form submission handling
-        loginForm.addEventListener('submit', (e) => {
+        // Handle form submission
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const remember = document.getElementById('remember').checked;
+            const rememberMe = document.getElementById('remember').checked;
 
-            // Here you would typically make an API call to your backend
-            console.log('Login attempt:', {
-                userType: currentUserType,
-                email,
-                password,
-                remember
-            });
+            try {
+                // Sign in with Supabase
+                const { data: { user }, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
 
-            // For demonstration purposes, show an alert
-            alert(Login attempt as ${currentUserType}\nEmail: ${email});
+                if (error) {
+                    showError(error.message);
+                    return;
+                }
+
+                // After successful login, get user's role from your users table
+                const { data: userData, error: userError } = await supabase
+                    .from('users')
+                    .select('user_type')
+                    .eq('id', user.id)
+                    .single();
+
+                if (userError) {
+                    showError('Error fetching user data');
+                    return;
+                }
+
+                // Verify user type matches selected tab
+                if (userData.user_type !== currentUserType) {
+                    showError(`Invalid login. Please use the ${currentUserType} login tab.`);
+                    await supabase.auth.signOut();
+                    return;
+                }
+
+                // Show success message
+                showSuccess('Login successful! Redirecting...');
+
+                // Store session if remember me is checked
+                if (rememberMe) {
+                    localStorage.setItem('supabase.auth.token', JSON.stringify(user));
+                }
+
+                // Redirect based on user type
+                setTimeout(() => {
+                    window.location.href = `/${currentUserType}_dashboard.html`;
+                }, 1500);
+
+            } catch (error) {
+                showError('An unexpected error occurred. Please try again.');
+                console.error('Login error:', error);
+            }
+        });
+
+        // Handle forgot password
+        forgotPasswordLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            if (!email) {
+                showError('Please enter your email address first');
+                return;
+            }
+
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + '/reset-password.html',
+                });
+
+                if (error) {
+                    showError(error.message);
+                } else {
+                    showSuccess('Password reset email sent. Please check your inbox.');
+                }
+            } catch (error) {
+                showError('Failed to send reset password email');
+                console.error('Reset password error:', error);
+            }
+        });
+
+        // Check for existing session on page load
+        window.addEventListener('load', async () => {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            
+            if (session) {
+                // Redirect to appropriate dashboard if already logged in
+                const { data: userData } = await supabase
+                    .from('users')
+                    .select('user_type')
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (userData) {
+                    window.location.href = `/${userData.user_type}_dashboard.html`;
+                }
+            }
         });
     </script>
 </body>
-</html>ign-items: center;
-        }
+</html>
+
