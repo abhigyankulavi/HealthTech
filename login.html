@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Health Advisor - Login</title>
-    <!-- Add Supabase JavaScript SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
@@ -226,34 +225,28 @@
     </div>
 
     <script>
-        // Initialize Supabase client
         const SUPABASE_URL = 'https://xleyqfmaqovkbtrfzryg.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZXlxZm1hcW92a2J0cmZ6cnlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc0NDY0MzIsImV4cCI6MjA0MzAyMjQzMn0.tk-qdlJLyy4kLb6Fq32mvzto9bIryuf07n7SSzr9Oes';
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // DOM elements
         const tabButtons = document.querySelectorAll('.tab-button');
         const loginForm = document.getElementById('loginForm');
         const errorMessage = document.getElementById('errorMessage');
         const successMessage = document.getElementById('successMessage');
         const forgotPasswordLink = document.getElementById('forgotPassword');
         let currentUserType = 'patient';
-
-        // Function to show error message
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
             successMessage.style.display = 'none';
         }
 
-        // Function to show success message
         function showSuccess(message) {
             successMessage.textContent = message;
             successMessage.style.display = 'block';
             errorMessage.style.display = 'none';
         }
 
-        // Handle tab switching
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -262,7 +255,6 @@
             });
         });
 
-        // Handle form submission
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -271,7 +263,7 @@
             const rememberMe = document.getElementById('remember').checked;
 
             try {
-                // Sign in with Supabase
+
                 const { data: { user }, error } = await supabase.auth.signInWithPassword({
                     email: email,
                     password: password
@@ -282,7 +274,6 @@
                     return;
                 }
 
-                // After successful login, get user's role from your users table
                 const { data: userData, error: userError } = await supabase
                     .from('users')
                     .select('*')
@@ -293,23 +284,18 @@
                     showError('Error fetching user data');
                     return;
                 }
-
-                // Verify user type matches selected tab
                 if (userData.user_type !== currentUserType) {
                     showError(`Invalid login. Please use the ${currentUserType} login tab.`);
                     await supabase.auth.signOut();
                     return;
                 }
 
-                // Show success message
                 showSuccess('Login successful! Redirecting...');
 
-                // Store session if remember me is checked
                 if (rememberMe) {
                     localStorage.setItem('supabase.auth.token', JSON.stringify(user));
                 }
 
-                // Redirect based on user type
                 setTimeout(() => {
                     window.location.href = `/${currentUserType}_dashboard.html`;
                 }, 1500);
@@ -320,7 +306,6 @@
             }
         });
 
-        // Handle forgot password
         forgotPasswordLink.addEventListener('click', async (e) => {
             e.preventDefault();
             
@@ -346,12 +331,10 @@
             }
         });
 
-        // Check for existing session on page load
         window.addEventListener('load', async () => {
             const { data: { session }, error } = await supabase.auth.getSession();
             
             if (session) {
-                // Redirect to appropriate dashboard if already logged in
                 const { data: userData } = await supabase
                     .from('users')
                     .select('user_type')
