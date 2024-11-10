@@ -1,435 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Disease Prediction</title>
-  <style>
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(to bottom, #EFF6FF, #FFFFFF);
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            color: #1E40AF;
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: #4B5563;
-        }
-
-        .prediction-container {
-            background: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .symptoms-form {
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.5rem;
-        }
-
-        .symptom-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .symptom-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            background: #F3F4F6;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .symptom-checkbox:hover {
-            background: #E5E7EB;
-        }
-
-        .symptom-checkbox input[type="checkbox"] {
-            width: 1rem;
-            height: 1rem;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #D1D5DB;
-            border-radius: 0.5rem;
-            resize: vertical;
-            min-height: 100px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        textarea:focus {
-            border-color: #2563EB;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .predict-button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: #2563EB;
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .predict-button:hover {
-            background-color: #1D4ED8;
-        }
-
-        .prediction-results {
-            display: none;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid #E5E7EB;
-        }
-
-        .prediction-results.active {
-            display: block;
-        }
-
-        .result-card {
-            background: #F8FAFC;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .disease-name {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1E40AF;
-            margin-bottom: 0.5rem;
-        }
-
-        .probability {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .probability-bar {
-            flex-grow: 1;
-            height: 0.5rem;
-            background: #E5E7EB;
-            border-radius: 1rem;
-            overflow: hidden;
-        }
-
-        .probability-fill {
-            height: 100%;
-            background: #2563EB;
-            border-radius: 1rem;
-            transition: width 0.3s ease;
-        }
-
-        .probability-value {
-            font-weight: 500;
-            color: #4B5563;
-            min-width: 3rem;
-        }
-
-        .recommendations {
-            background: #EFF6FF;
-            border-radius: 0.5rem;
-            padding: 1rem;
-        }
-
-        .recommendations h3 {
-            color: #1E40AF;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .recommendations ul {
-            list-style-type: none;
-        }
-
-        .recommendations li {
-            color: #4B5563;
-            margin-bottom: 0.5rem;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-
-        .recommendations li::before {
-            content: "•";
-            color: #2563EB;
-            position: absolute;
-            left: 0.5rem;
-        }
-
-        .disclaimer {
-            margin-top: 2rem;
-            padding: 1rem;
-            background: #FEF2F2;
-            border-radius: 0.5rem;
-            color: #991B1B;
-            font-size: 0.875rem;
-            text-align: center;
-        }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Disease Prediction</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <h1>AI Disease Prediction</h1>
-      <p>Enter your symptoms for an AI-powered health assessment</p>
-    </header>
+    <div class="container">
+        <header class="header">
+            <h1>AI Disease Prediction</h1>
+            <p>Enter your symptoms for an AI-powered health assessment</p>
+        </header>
 
-    <div class="prediction-container">
-      <div class="form-group">
-        <h2>Common Symptoms</h2>
-        <div class="symptom-grid">
-          <!-- Checkbox elements to select symptoms -->
-          <label class="symptom-checkbox">
-            <input type="checkbox" value="Fever"> Fever
-          </label>
-          <label class="symptom-checkbox">
-            <input type="checkbox" value="Cough"> Cough
-          </label>
-          <label class="symptom-checkbox">
-            <input type="checkbox" value="Fatigue"> Fatigue
-          </label>
-          <label class="symptom-checkbox">
-            <input type="checkbox" value="Headache"> Headache
-          </label>
-          <label class="symptom-checkbox">
-            <input type="checkbox" value="Sore Throat"> Sore Throat
-          </label>
-          <label class="symptom-checkbox">
-            <input type="checkbox" value="Body Aches"> Body Aches
-          </label>
-          <label class="symptom-checkbox">
-            <input type="checkbox" value="Shortness of Breath"> Shortness of Breath
-          </label>
-          <label class="symptom-checkbox">
-            <input type="checkbox" value="Nausea"> Nausea
-          </label>
-        </div>
-      </div>
+        <div class="chat-container">
+            <div class="symptoms-form">
+                <div class="symptom-grid">
+                    <label class="symptom-checkbox">
+                        <input type="checkbox" name="symptoms" value="fever"> Fever
+                    </label>
+                    <label class="symptom-checkbox">
+                        <input type="checkbox" name="symptoms" value="cough"> Cough
+                    </label>
+                    <label class="symptom-checkbox">
+                        <input type="checkbox" name="symptoms" value="fatigue"> Fatigue
+                    </label>
+                    <label class="symptom-checkbox">
+                        <input type="checkbox" name="symptoms" value="headache"> Headache
+                    </label>
+                    <label class="symptom-checkbox">
+                        <input type="checkbox" name="symptoms" value="sore-throat"> Sore Throat
+                    </label>
+                    <label class="symptom-checkbox">
+                        <input type="checkbox" name="symptoms" value="body-aches"> Body Aches
+                    </label>
+                    <label class="symptom-checkbox">
+                        <input type="checkbox" name="symptoms" value="shortness-breath"> Shortness of Breath
+                    </label>
+                    <label class="symptom-checkbox">
+                        <input type="checkbox" name="symptoms" value="nausea"> Nausea
+                    </label>
+                </div>
 
-      <div class="form-group">
-        <label for="additionalSymptoms">Additional Symptoms or Notes:</label>
-        <textarea id="additionalSymptoms" rows="3"></textarea>
-      </div>
-
-      <button id="analyzeButton" class="predict-button">Analyze Symptoms</button>
-
-      <div id="predictionResults" class="prediction-results">
-        <!-- Prediction results will be displayed here -->
-      </div>
-
-      <div class="disclaimer">
-        <p>This is an AI-powered prediction tool and should not be used as a substitute for professional medical advice. Please consult with a healthcare provider for proper diagnosis and treatment.</p>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Function to collect symptoms based on selected checkboxes and additional input
-    function collectSymptoms() {
-      const selectedSymptoms = Array.from(document.querySelectorAll('.symptom-checkbox input:checked'))
-        .map(input => input.value);
-      const additionalSymptoms = document.getElementById('additionalSymptoms').value.trim();
-
-      // Combine selected symptoms and additional symptoms
-      const allSymptoms = selectedSymptoms.concat(additionalSymptoms ? [additionalSymptoms] : []);
-      return allSymptoms.join(', ');
-    }
-
-    // Function to display prediction results
-    function displayResults(data) {
-      const resultsContainer = document.getElementById('predictionResults');
-      resultsContainer.innerHTML = `
-        <div class="result-card">
-          <div class="disease-name">${data.disease}</div>
-          <div class="probability">
-            <div class="probability-bar">
-              <div class="probability-fill" style="width: ${data.confidence}%;"></div>
+                <textarea id="additional-symptoms" placeholder="Describe any additional symptoms or concerns..."></textarea>
+                
+                <button class="analyze-btn" onclick="DiagnosisSystem.analyze()">Analyze Symptoms</button>
             </div>
-            <span class="probability-value">${data.confidence.toFixed(1)}%</span>
-          </div>
-          <div class="recommendations">
-            <h3>Recommendations</h3>
-            <ul>
-              <li>${data.recommendation}</li>
-            </ul>
-          </div>
+
+            <div id="results"></div>
+
+            <div class="disclaimer">
+                <p>This is an AI-powered prediction tool and should not be used as a substitute for professional medical advice. 
+                   Please consult with a healthcare provider for proper diagnosis and treatment.</p>
+            </div>
         </div>
-      `;
-      resultsContainer.classList.add('active');
-    }
-
-    // Event listener for Analyze button
-    document.getElementById('analyzeButton').addEventListener('click', async () => {
-      const symptoms = collectSymptoms();
-
-      try {
-        const response = await fetch('/api/predict', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ symptoms })
-        });
-
-        const data = await response.json();
-
-        // Display prediction results using the displayResults function
-        displayResults(data);
-      } catch (error) {
-        console.error('Error:', error);
-        // Handle error and update the UI accordingly
-        alert('An error occurred while analyzing symptoms.');
-      }
-    });
-  </script>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
+    <script src="js/symptomData.js"></script>
+    <script src="js/aiModel.js"></script>
+    <script src="js/diagnosisSystem.js"></script>
 </body>
 </html>
-import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
-import { createClient } from '@supabase/supabase-js';
-
-// Initialize Supabase client
-const supabase = createClient(
-  'https://xleyqfmaqovkbtrfzryg.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZXlxZm1hcW92a2J0cmZ6cnlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc0NDY0MzIsImV4cCI6MjA0MzAyMjQzMn0.tk-qdlJLyy4kLb6Fq32mvzto9bIryuf07n7SSzr9Oes'
-);
-
-// Function to calculate disease prediction based on symptom matching
-function predictDisease(userSymptoms, diseases) {
-  let bestMatch = null;
-  let highestConfidence = 0;
-
-  diseases.forEach((disease) => {
-    // Convert the symptoms string to an array if needed
-    const diseaseSymptoms = disease.symptoms;
-    let matchCount = 0;
-
-    // Match user symptoms with disease symptoms
-    userSymptoms.forEach((symptom) => {
-      if (diseaseSymptoms.includes(symptom)) {
-        matchCount++;
-      }
-    });
-
-    // Calculate confidence as a percentage of matched symptoms
-    const confidence = (matchCount / diseaseSymptoms.length) * 100;
-
-    // Update if confidence for this disease is higher than previous
-    if (confidence > highestConfidence) {
-      highestConfidence = confidence;
-      bestMatch = {
-        disease: disease.name,
-        confidence: confidence,
-        recommendation: `Based on your symptoms, you might have ${disease.name}. Please consult a healthcare provider for a precise diagnosis.`
-      };
-    }
-  });
-
-  // Return the best match found or a default response if no good match was found
-  return bestMatch || {
-    disease: 'Unknown',
-    confidence: 0,
-    recommendation: 'No strong matches found. Please consult a healthcare provider for further assessment.'
-  };
-}
-
-// Start the server
-serve(async (req) => {
-  if (req.method === 'POST' && req.url === '/api/predict') {
-    const { symptoms } = await req.json();
-
-    try {
-      // Fetch disease information from the database
-      const { data: diseases, error: diseaseError } = await supabase
-        .from('diseases')
-        .select('*');
-
-      if (diseaseError) {
-        return new Response(JSON.stringify({ error: diseaseError.message }), {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      // Predict disease based on symptoms
-      const predictedDisease = predictDisease(symptoms, diseases);
-
-      // Store the prediction result in the database
-      const { error: predictionError } = await supabase
-        .from('symptom_history')
-        .insert({
-          symptoms,
-          predicted_disease: predictedDisease.disease,
-          confidence: predictedDisease.confidence,
-        });
-
-      if (predictionError) {
-        return new Response(JSON.stringify({ error: predictionError.message }), {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      // Return the prediction response
-      return new Response(JSON.stringify(predictedDisease), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    } catch (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-  }
-
-  return new Response('Not Found', { status: 404 });
-});
-
