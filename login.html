@@ -285,7 +285,7 @@
                 // After successful login, get user's role from your users table
                 const { data: userData, error: userError } = await supabase
                     .from('users')
-                    .select('user_type')
+                    .select('*')
                     .eq('id', user.id)
                     .single();
 
