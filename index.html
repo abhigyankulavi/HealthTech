@@ -3,61 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Disease Prediction</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>E-Health Advisor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        .nav {
+            background: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: #4b5563;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .main {
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #f0f7ff, white);
+        }
+
+        .hero {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #4b5563;
+            margin-bottom: 2rem;
+            max-width: 36rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .features {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 4rem 1rem;
+        }
+
+        .features h2 {
+            font-size: 1.875rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #111827;
+        }
+
+        .features-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 40px 20px;
+            min-height: 300px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 3rem;
+            height: 3rem;
+            background: #dbeafe;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        .discussion-forum {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 20px;
+            min-height: 300px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .discussion-forum h3 {
+            color: #2563eb;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .forum-post {
+            margin-bottom: 15px;
+        }
+
+        .forum-post h4 {
+            font-size: 1.1rem;
+            color: #111827;
+            margin-bottom: 5px;
+        }
+
+        .forum-post p {
+            color: #4b5563;
+            line-height: 1.4;
+        }
+
+        .reply-button {
+            background: #2563eb;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .reply-button:hover {
+            background: #1d4ed8;
+        }
+
+        @media (max-width: 768px) {
+            .features-container {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+        } (Existing CSS styles...) */
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>AI Disease Prediction</h1>
-            <p>Enter your symptoms for an AI-powered health assessment</p>
-        </header>
-
-        <div class="chat-container">
-            <div class="symptoms-form">
-                <div class="symptom-grid">
-                    <label class="symptom-checkbox">
-                        <input type="checkbox" name="symptoms" value="fever"> Fever
-                    </label>
-                    <label class="symptom-checkbox">
-                        <input type="checkbox" name="symptoms" value="cough"> Cough
-                    </label>
-                    <label class="symptom-checkbox">
-                        <input type="checkbox" name="symptoms" value="fatigue"> Fatigue
-                    </label>
-                    <label class="symptom-checkbox">
-                        <input type="checkbox" name="symptoms" value="headache"> Headache
-                    </label>
-                    <label class="symptom-checkbox">
-                        <input type="checkbox" name="symptoms" value="sore-throat"> Sore Throat
-                    </label>
-                    <label class="symptom-checkbox">
-                        <input type="checkbox" name="symptoms" value="body-aches"> Body Aches
-                    </label>
-                    <label class="symptom-checkbox">
-                        <input type="checkbox" name="symptoms" value="shortness-breath"> Shortness of Breath
-                    </label>
-                    <label class="symptom-checkbox">
-                        <input type="checkbox" name="symptoms" value="nausea"> Nausea
-                    </label>
-                </div>
-
-                <textarea id="additional-symptoms" placeholder="Describe any additional symptoms or concerns..."></textarea>
-                
-                <button class="analyze-btn" onclick="DiagnosisSystem.analyze()">Analyze Symptoms</button>
-            </div>
-
-            <div id="results"></div>
-
-            <div class="disclaimer">
-                <p>This is an AI-powered prediction tool and should not be used as a substitute for professional medical advice. 
-                   Please consult with a healthcare provider for proper diagnosis and treatment.</p>
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo">E-Health Advisor</div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
             </div>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
-    <script src="js/symptomData.js"></script>
-    <script src="js/aiModel.js"></script>
-    <script src="js/diagnosisSystem.js"></script>
+    </nav>
+
+    <main class="main">
+        <section class="hero">
+            <h1>Elevate Your Health Potential</h1>
+            <p>Our e-Health Advisor provides personalized guidance and tools to help you achieve your wellness goals.</p>
+            <a href="login.html" class="btn service-button">Get Started</a>
+        </section>
+
+        <section class="features">
+            <h2>Key Features</h2>
+            <div class="features-container">
+                <!-- Feature Cards Section -->
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🧠</div>
+                        <h3>Personalized Recommendations</h3>
+                        <p>Our AI-powered advisor analyzes your health data to provide tailored suggestions.</p>
+                        <a href="diseaseprediction.html" class="btn service-button">AI-Disease Prediction</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📹</div>
+                        <h3>Medicine Suggestion</h3>
+                        <p>All your medicine requirements in one click only at Apollo Pharmacy.</p>
+                        <a href="https://www.apollopharmacy.in/" target="_blank" class="btn">Visit apollopharmacy.in</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Health Records</h3>
+                        <p>Monitor your progress and stay motivated with our comprehensive tracking tools.</p>
+                        <a href="records.html" class="btn service-button">View Health Records</a>
+                    </div>
+                </div>
+
+               <div class="discussion-forum">
+                    <h3>Discussion Forum</h3>
+                    <div class="forum-post">
+                        <h4>Persistent Headache for a Week</h4>
+                        <p>I’ve been having persistent headaches for over a week now. Has anyone else experienced this?</p>
+                        <button class="reply-button">Reply</button>
+                    </div>
+                    <div class="forum-post">
+                        <h4>Frequent Coughing and Shortness of Breath</h4>
+                        <p>I’ve been experiencing frequent coughing and shortness of breath. Any advice is appreciated.</p>
+                        <button class="reply-button">Reply</button>
+                    </div>
+                    
+                    <a href="forum.html" class="btn service-button">Join the discussion forum</a>
+                </div>
+          </div>
+        </section>
+    </main>
 </body>
 </html>
