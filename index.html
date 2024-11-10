@@ -114,15 +114,16 @@
         }
 
         .feature-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; 
             background: white;
             border-radius: 0.75rem;
             padding: 40px 20px; 
             min-height: 400px;  
             position: relative;
-            padding: 1.5rem;
             text-align: center;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            min-height: 300px;
             transition: box-shadow 0.2s;
         }
 
@@ -148,10 +149,14 @@
             margin-bottom: 1rem;
         }
 
-        .feature-card p {
+       .feature-card p {
             color: #4b5563;
             line-height: 1.5;
             flex-grow: 1;
+            margin-bottom: 1rem; 
+        }
+        .service-button {
+            margin-top: auto; 
         }
 
         @media (max-width: 768px) {
