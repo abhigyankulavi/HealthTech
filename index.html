@@ -83,8 +83,6 @@
             border-radius: 0.5rem;
             border: none;
             font-size: 1rem;
-            margin-top: 20px;
-            margin-top: auto;
             cursor: pointer;
             transition: background-color 0.2s;
         }
@@ -106,22 +104,23 @@
             color: #111827;
         }
 
+        .features-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: 1fr;
             gap: 20px;
         }
 
         .feature-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; 
             background: white;
             border-radius: 0.75rem;
-            padding: 40px 20px; 
-            min-height: 400px;  
-            position: relative;
+            padding: 40px 20px;
+            min-height: 300px;
             text-align: center;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             transition: box-shadow 0.2s;
@@ -149,27 +148,68 @@
             margin-bottom: 1rem;
         }
 
-       .feature-card p {
+        .feature-card p {
             color: #4b5563;
             line-height: 1.5;
-            flex-grow: 1;
-            margin-bottom: 1rem; 
         }
-        .service-button {
-            margin-top: auto; 
+
+        .discussion-forum {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 20px;
+            min-height: 300px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .discussion-forum h3 {
+            color: #2563eb;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .forum-post {
+            margin-bottom: 15px;
+        }
+
+        .forum-post h4 {
+            font-size: 1.1rem;
+            color: #111827;
+            margin-bottom: 5px;
+        }
+
+        .forum-post p {
+            color: #4b5563;
+            line-height: 1.4;
+        }
+
+        .reply-button {
+            background: #2563eb;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .reply-button:hover {
+            background: #1d4ed8;
         }
 
         @media (max-width: 768px) {
+            .features-container {
+                grid-template-columns: 1fr;
+            }
+
             .nav-links {
                 display: none;
             }
 
             .hero h1 {
                 font-size: 2rem;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -183,7 +223,6 @@
                 <a href="services.html">Services</a>
                 <a href="about.html">About</a>
                 <a href="contact.html">Contact</a>
-               
             </div>
         </div>
     </nav>
@@ -193,34 +232,49 @@
             <h1>Elevate Your Health Potential</h1>
             <p>Our e-Health Advisor provides personalized guidance and tools to help you achieve your wellness goals.</p>
             <a href="login.html" class="btn service-button">Get Started</a>
-
         </section>
 
         <section class="features">
             <h2>Key Features</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🧠</div>
-                    <h3>Personalized Recommendations</h3>
-                    <p>Our AI-powered advisor analyzes your health data to provide tailored suggestions.</p>
-                     <a href="diseaseprediction.html" class="btn service-button">AI-Disease Prediction</a>
-
+            <div class="features-container">
+                <!-- Feature Cards Section -->
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🧠</div>
+                        <h3>Personalized Recommendations</h3>
+                        <p>Our AI-powered advisor analyzes your health data to provide tailored suggestions.</p>
+                        <a href="diseaseprediction.html" class="btn service-button">AI-Disease Prediction</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📹</div>
+                        <h3>Medicine Suggestion</h3>
+                        <p>All your medicine requirements in one click.</p>
+                        <a href="https://www.apollopharmacy.in/" target="_blank" class="btn">Visit Site</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Health Records</h3>
+                        <p>Monitor your progress and stay motivated with our comprehensive tracking tools.</p>
+                    </div>
                 </div>
-               <div class="feature-card">
-                    <div class="feature-icon">📹</div>
-                    <h3>Medicine suggestion</h3>
-                    <p>All your medicine requirements in one click</p>
-                    <a href="https://www.apollopharmacy.in/" target="_blank" class="btn">Visit Site</a>
-               </div>
-               </a>
 
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Health records</h3>
-                    <p>Monitor your progress and stay motivated with our comprehensive tracking tools.</p>
+                <!-- Discussion Forum Section -->
+                <div class="discussion-forum">
+                    <h3>Discussion Forum</h3>
+                    <div class="forum-post">
+                        <h4>Persistent Headache for a Week</h4>
+                        <p>I’ve been having persistent headaches for over a week now. Has anyone else experienced this?</p>
+                        <button class="reply-button">Reply</button>
+                    </div>
+                    <div class="forum-post">
+                        <h4>Frequent Coughing and Shortness of Breath</h4>
+                        <p>I’ve been experiencing frequent coughing and shortness of breath. Any advice is appreciated.</p>
+                        <button class="reply-button">Reply</button>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 </body>
 </html>
+
