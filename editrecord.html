@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Patient Record</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xml2js/0.4.23/xml2js.min.js"></script> <!-- XML parser library -->
     <style>
         * {
             margin: 0;
@@ -83,12 +84,11 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <h1>Edit Patient Record</h1>
 
-    <form id="patientForm">
-        <!-- Form fields for patient details -->
+    <form id="patientForm" enctype="multipart/form-data">
+        <!-- Additional form fields for patient details -->
         <div class="form-group">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
@@ -121,12 +121,15 @@
             <label for="chronic_conditions">Chronic Conditions:</label>
             <input type="text" id="chronic_conditions" name="chronic_conditions">
         </div>
+        
+        <!-- File upload field for EHR -->
         <div class="form-group">
             <label for="ehr">Upload EHR:</label>
-            <input type="file" id="ehr" name="ehr" accept=".txt,.json,.pdf,.xlxs,.xls" required>
+            <input type="file" id="ehr" name="ehr" accept=".txt,.json,.pdf,.xls,.xlsx,.xml,.csv" required>
         </div>
 
-        <button type="button" id="submitBtn" class="btn">Generate Excel</button>
+        <button type="button" id="submitBtn" class="btn">Upload EHR to Database</button>
+        <button type="button" id="displayBtn" class="btn">Display EHR Data</button>
     </form>
 
     <div id="ehrContent" style="display:none;">
@@ -136,38 +139,38 @@
 </div>
 
 <script>
-    document.getElementById('ehr').addEventListener('change', function(event) {
-    const file = event.target.files[0];
+document.getElementById('submitBtn').addEventListener('click', async () => {
+    const formData = new FormData(document.getElementById('patientForm'));
+
+    const fileInput = document.getElementById('ehr');
+    const file = fileInput.files[0];
+    
     if (file) {
-        const fileName = file.name;
-        if (fileName.endsWith('.txt') || fileName.endsWith('.json')) {
-            // Handle text files as before
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const content = e.target.result;
-                document.getElementById('ehrContent').style.display = 'block';
-                document.getElementById('ehrDisplay').textContent = content;
-            };
-            reader.readAsText(file);
-        } else if (fileName.endsWith('.xlsx')) {
-            // Handle Excel files
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const excelData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-                document.getElementById('ehrContent').style.display = 'block';
-                document.getElementById('ehrDisplay').textContent = JSON.stringify(excelData, null, 2);
-            };
-            reader.readAsArrayBuffer(file);
-        } else {
-            alert("Unsupported file type. Please upload a .txt, .json, .xls or .xlsx file.");
+        try {
+            const response = await fetch('/upload-ehr', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            alert(result.message);
+        } catch (error) {
+            console.error('Error uploading file:', error);
         }
+    } else {
+        alert('Please select a file to upload.');
     }
 });
 
+document.getElementById('displayBtn').addEventListener('click', async () => {
+    try {
+        const response = await fetch('/fetch-ehr');
+        const ehrData = await response.json();
+        document.getElementById('ehrContent').style.display = 'block';
+        document.getElementById('ehrDisplay').textContent = JSON.stringify(ehrData, null, 2);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+});
 </script>
-
 </body>
 </html>
