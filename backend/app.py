@@ -1,21 +1,20 @@
-# backend/app.py
-
-from flask import Flask, request
-from openpyxl import Workbook, load_workbook
 import os
+from openpyxl import Workbook, load_workbook
 
-app = Flask(__name__)
+EXCEL_FILE = 'backend/patient_records.xlsx'
 
-# Define the Excel file path
-EXCEL_FILE = "backend/patient_records.xlsx"  # Store the Excel file in the backend directory
-
-# Create the Excel file with headers if it doesn't exist
+# Check if the Excel file exists
 if not os.path.exists(EXCEL_FILE):
+    # If it doesn't, create a new workbook and save it
     workbook = Workbook()
     sheet = workbook.active
-    # Add headers
+    # Add headers or any initial content if needed
     sheet.append(["Name", "Age", "Gender", "Contact", "Address", "Allergies", "Chronic Conditions"])
     workbook.save(EXCEL_FILE)
+
+# Now load the workbook
+workbook = load_workbook(EXCEL_FILE)
+
 
 # Define a route to handle form submissions
 @app.route('/submit_record', methods=['POST'])
