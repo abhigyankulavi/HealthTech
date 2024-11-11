@@ -136,44 +136,37 @@
 </div>
 
 <script>
-    // Function to handle EHR file upload and display its content
     document.getElementById('ehr').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
+    const file = event.target.files[0];
+    if (file) {
+        const fileName = file.name;
+        if (fileName.endsWith('.txt') || fileName.endsWith('.json')) {
+            // Handle text files as before
             const reader = new FileReader();
             reader.onload = function(e) {
                 const content = e.target.result;
                 document.getElementById('ehrContent').style.display = 'block';
                 document.getElementById('ehrDisplay').textContent = content;
             };
-            reader.readAsText(file); // Read the file content as text
+            reader.readAsText(file);
+        } else if (fileName.endsWith('.xlsx')) {
+            // Handle Excel files
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const excelData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                document.getElementById('ehrContent').style.display = 'block';
+                document.getElementById('ehrDisplay').textContent = JSON.stringify(excelData, null, 2);
+            };
+            reader.readAsArrayBuffer(file);
+        } else {
+            alert("Unsupported file type. Please upload a .txt, .json, or .xlsx file.");
         }
-    });
+    }
+});
 
-    // Function to generate Excel file with form data and EHR content
-    document.getElementById('submitBtn').addEventListener('click', function() {
-        // Get form values
-        const name = document.getElementById('name').value;
-        const age = document.getElementById('age').value;
-        const gender = document.getElementById('gender').value;
-        const contact = document.getElementById('contact').value;
-        const address = document.getElementById('address').value;
-        const allergies = document.getElementById('allergies').value;
-        const chronic_conditions = document.getElementById('chronic_conditions').value;
-        const ehrContent = document.getElementById('ehrDisplay').textContent || "No EHR uploaded";
-
-        // Create a new workbook and worksheet
-        const wb = XLSX.utils.book_new();
-        const wsData = [
-            ["Name", "Age", "Gender", "Contact", "Address", "Allergies", "Chronic Conditions", "EHR Content"],
-            [name, age, gender, contact, address, allergies, chronic_conditions, ehrContent]
-        ];
-        const ws = XLSX.utils.aoa_to_sheet(wsData);
-        XLSX.utils.book_append_sheet(wb, ws, "PatientData");
-
-        // Save the workbook as an Excel file
-        XLSX.writeFile(wb, "patient_records.xlsx");
-    });
 </script>
 
 </body>
